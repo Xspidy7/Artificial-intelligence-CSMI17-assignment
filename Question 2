@@ -1,0 +1,42 @@
+% Facts about weights
+weight(man, 80).
+weight(woman, 80).
+weight(child1, 30).
+weight(child2, 30).
+
+% The boat capacity
+boat_capacity(100).
+
+% Initial state: All on the left bank
+initial_state([left, left, left, left]). % [Man, Woman, Child1, Child2]
+
+% Final state: All on the right bank
+final_state([right, right, right, right]).
+
+% Boat crossings (each time we check the weight)
+move([M, W, C1, C2], [M1, W1, C1, C2], [left, B]) :- 
+    weight(B, WB), WB =< 100, 
+    switch_side(M, M1), 
+    B = M. % Man rows alone
+move([M, W, C1, C2], [M1, W, C1, C2], [left, B]) :- 
+    weight(B, WB), WB =< 100, 
+    switch_side(W, W1), 
+    B = W. % Woman rows alone
+
+% Check if we can switch sides
+switch_side(left, right).
+switch_side(right, left).
+
+% Recursive rule to try to transport everyone
+cross_river(State, Path) :- 
+    final_state(State),
+    write(Path), nl.
+
+cross_river(State, Path) :- 
+    move(State, NewState, [M, B]),
+    cross_river(NewState, [[M, B] | Path]).
+
+% Starting point for solving the problem
+solve_crossing :- 
+    initial_state(State), 
+    cross_river(State, []).
