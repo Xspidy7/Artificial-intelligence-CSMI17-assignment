@@ -1,0 +1,12 @@
+% Facts
+male(john). % Assume the speaker is John
+
+% Rule to deduce who "that man" is
+that_man(X) :-
+    father(Y, X),    % X's father is Y
+    father(Z, Y),    % Y's father is Z
+    father(Z, john), % John’s father is also Z
+    john = Y.        % John is Y (since John has no siblings)
+
+% Facts for family relationships
+father(john, son). % John is the father of his son
